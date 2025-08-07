@@ -1,4 +1,6 @@
-Here’s your **30-day Express.js crash course**, structured API-first with JWT authentication, and hands-on daily *mini-projects* or tasks. Each day features a practical prompt with code snippets, reference resources, and fallback reading for fundamentals—perfect for just-in-time diving or deeper learning, tailored for a senior engineer like you.
+This **30-day Express.js crash course** is structured with an **API-first approach** and focuses on **JWT authentication**. It provides hands-on daily *mini-projects* or tasks, complete with code snippets, reference resources, and fallback reading for fundamentals. This course is designed for experienced software engineers, allowing for just-in-time diving or deeper learning.
+
+Here’s your **33-day Express.js crash course**, structured API-first with JWT authentication, and hands-on daily *mini-projects* or tasks. Each day features a practical prompt with code snippets, reference resources, and fallback reading for fundamentals—perfect for just-in-time diving or deeper learning, tailored for a senior engineer like you.
 
 ## **Days 1–3: Foundations & Project Setup**
 
@@ -34,15 +36,16 @@ Here’s your **30-day Express.js crash course**, structured API-first with JWT 
 
 ## **Days 4–6: Handling and Parsing Data**
 
-**Day 4: Parsing JSON Requests**
+**Day 4: Parsing JSON & URL-Encoded Requests**
 
-- **Task:** Configure `express.json()` middleware globally.
+- **Task:** Configure `express.json()` and `express.urlencoded()` middleware globally to handle different request body types.
 - **Snippet:**
     ```js
     app.use(express.json());
+    app.use(express.urlencoded({ extended: true })); // For parsing application/x-www-form-urlencoded
     ```
-- **Resources:** [Request handling docs](https://expressjs.com/en/api.html#express.json)
-- **Reading:** What is the `req.body` object?
+- **Resources:** [Request handling docs](https://expressjs.com/en/api.html#express.json), [express.urlencoded()](https://expressjs.com/en/api.html#express.urlencoded)
+- **Reading:** What is the `req.body` object? How do `application/json` and `application/x-www-form-urlencoded` differ?
 
 **Day 5: Route Parameters & Query Strings**
 
@@ -94,21 +97,54 @@ Here’s your **30-day Express.js crash course**, structured API-first with JWT 
     ```
 - **Resources:** [CORS in Express](https://expressjs.com/en/resources/middleware/cors.html)
 
-**Day 9: Error Handling Middleware**
+**Day 9: Synchronous Error Handling Middleware**
 
-- **Task:** Add centralized error handler; trigger it with a `/fail` endpoint.
+- **Task:** Add a centralized error handler for synchronous errors; trigger it with a `/fail` endpoint.
 - **Snippet:**
     ```js
-    app.get('/fail', (req, res, next) => next(new Error('Failure!')));
+    app.get('/fail', (req, res, next) => {
+      throw new Error('Synchronous Failure!'); // This will be caught by the error middleware
+    });
     app.use((err, req, res, next) => {
+      console.error(err.stack); // Log the error stack for debugging
       res.status(500).json({ error: err.message });
     });
     ```
 - **Resources:** [Error handling](https://expressjs.com/en/guide/error-handling.html)
 
-## **Days 10–12: Input Validation**
+**Day 10: Asynchronous Error Handling**
 
-**Day 10: Using express-validator**
+- **Task:** Implement robust error handling for asynchronous operations (e.g., database calls, API requests) within routes.
+- **Snippet:**
+    ```js
+    // Option 1: Using a utility to wrap async route handlers
+    const asyncHandler = fn => (req, res, next) => {
+      Promise.resolve(fn(req, res, next)).catch(next);
+    };
+
+    app.get('/async-fail', asyncHandler(async (req, res, next) => {
+      // Simulate an async operation that throws an error
+      await new Promise(resolve => setTimeout(resolve, 100));
+      throw new Error('Asynchronous Failure!');
+    }));
+
+    // Option 2: Using try-catch within the async function
+    app.get('/another-async-fail', async (req, res, next) => {
+      try {
+        await new Promise(resolve => setTimeout(resolve, 100));
+        throw new Error('Another Asynchronous Failure!');
+      } catch (err) {
+        next(err); // Pass the error to the error handling middleware
+      }
+    });
+    ```
+- **Resources:** [Handling Errors in Express.js Async Functions](https://expressjs.com/en/guide/error-handling.html#catching-errors-in-asynchronous-code)
+- **Reading:** Understand `try/catch` with `async/await` and how `next(err)` passes errors to the middleware. Consider `express-async-errors` package for simpler async error handling."
+
+
+## **Days 11–13: Input Validation**
+
+**Day 11: Using express-validator**
 
 - **Task:** Install `express-validator`, require an email in POST `/users`.
 - **Snippet:**
@@ -122,14 +158,35 @@ Here’s your **30-day Express.js crash course**, structured API-first with JWT 
     ```
 - **Resources:** [express-validator docs](https://express-validator.github.io/docs/)
 
-**Day 11: Custom Validation Logic**
+**Day 11: Custom Validation Logic & `checkSchema`**
 
-- **Task:** Require password min length in `/users` POST.
+- **Task:** Require password min length in `/users` POST. Additionally, use `checkSchema` to define validation rules for a more complex user registration payload (e.g., `username`, `email`, `password`).
 - **Snippet:**
     ```js
+    // For password min length
     body('password').isLength({ min: 8 })
+
+    // Using checkSchema for a more complex payload
+    const { checkSchema } = require('express-validator');
+    app.post('/register', checkSchema({
+      username: {
+        notEmpty: { errorMessage: 'Username is required' },
+        isLength: { options: { min: 3 }, errorMessage: 'Username must be at least 3 characters' }
+      },
+      email: {
+        isEmail: { errorMessage: 'Invalid email address' }
+      },
+      password: {
+        isLength: { options: { min: 8 }, errorMessage: 'Password must be at least 8 characters' }
+      }
+    }), (req, res) => {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+      res.sendStatus(201);
+    });
     ```
-- **Reading:** [Custom validators](https://express-validator.github.io/docs/custom-validator-sanitizer/)
+- **Reading:** [Custom validators](https://express-validator.github.io/docs/custom-validator-sanitizer/), [checkSchema documentation](https://express-validator.github.io/docs/check-schema-api.html)
+- **Further Reading:** `checkSchema` is a powerful feature for defining complex validation rules concisely. Explore its full capabilities for nested objects, conditional validation, and custom error messages.
 
 **Day 12: Sanitization**
 
@@ -140,9 +197,65 @@ Here’s your **30-day Express.js crash course**, structured API-first with JWT 
     ```
 - **Reading:** [Sanitization methods](https://express-validator.github.io/docs/sanitization/)
 
-## **Days 13–16: Auth API with JWTs**
+## **Days 16–19: Environment Configuration & Auth API with JWTs**
 
-**Day 13: Setup JWT Auth with jsonwebtoken**
+**Day 13: Environment Configuration with `dotenv`**
+
+- **Task:** Implement environment variable loading using `dotenv` to manage sensitive information (e.g., database credentials, API keys, JWT secrets) and configuration settings.
+- **Snippet:**
+    ```js
+    // In your main app.js or a config file
+    require('dotenv').config();
+    const jwtSecret = process.env.JWT_SECRET; // Access environment variables
+    ```
+- **Resources:** [dotenv npm package](https://www.npmjs.com/package/dotenv), [12 Factor App - Config](https://12factor.net/config)
+- **Reading:** Why are environment variables crucial for application security and deployment? How do you handle different environments (development, production)?
+
+**Day 14: Intro to Passport.js**
+
+- **Task:** Understand the role of Passport.js in authentication. Install `passport` and `passport-jwt`.
+- **Snippet:**
+    ```js
+    const passport = require('passport');
+    const JwtStrategy = require('passport-jwt').Strategy;
+    const ExtractJwt = require('passport-jwt').ExtractJwt;
+
+    app.use(passport.initialize());
+    ```
+- **Resources:** [Passport.js documentation](https://www.passportjs.org/docs/), [Passport-JWT documentation](https://www.passportjs.org/packages/passport-jwt/)
+- **Reading:** How does Passport.js simplify authentication strategies? What is a "strategy" in Passport.js?
+
+**Day 15: Passport.js JWT Strategy**
+
+- **Task:** Configure Passport.js to use a JWT strategy for authenticating users based on a token.
+- **Snippet:**
+    ```js
+    const opts = {
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      secretOrKey: process.env.JWT_SECRET // Use your JWT secret from .env
+    };
+
+    passport.use(new JwtStrategy(opts, (jwt_payload, done) => {
+      // In a real app, you'd look up the user in your database here
+      // For this example, we'll just assume the user is valid
+      if (jwt_payload.userId) {
+        return done(null, { id: jwt_payload.userId });
+      } else {
+        return done(null, false);
+      }
+    }));
+
+    // Example of using the strategy in a route
+    app.get('/profile', passport.authenticate('jwt', { session: false }), (req, res) => {
+      res.json({ message: 'Welcome!', user: req.user });
+    });
+    ```
+- **Resources:** [Passport-JWT example](https://www.passportjs.org/packages/passport-jwt/#usage)
+- **Reading:** How does `passport.authenticate()` work? What is `session: false`?
+
+**Day 16: Setup JWT Auth with jsonwebtoken**
+
+**Day 16: Setup JWT Auth with jsonwebtoken**
 
 - **Task:** Install `jsonwebtoken`, create `/auth/login` route to return token.
 - **Snippet:**
@@ -194,9 +307,9 @@ Here’s your **30-day Express.js crash course**, structured API-first with JWT 
     ```
 - **Resources:** [bcrypt docs](https://github.com/dcodeIO/bcrypt.js/)
 
-## **Days 17–20: API Expansion & RBAC**
+## **Days 19–22: API Expansion & RBAC**
 
-**Day 17: Route-Level Authorization**
+**Day 20: Route-Level Authorization**
 
 - **Task:** Add "admin" property to JWT. Create middleware to allow only admin users to access `/admin`.
 - **Snippet:**
@@ -227,7 +340,7 @@ Here’s your **30-day Express.js crash course**, structured API-first with JWT 
 - **Task:** Use `swagger-ui-express` and `swagger-jsdoc` to create live API docs at `/api-docs`.
 - **Resources:** [swagger-ui-express example](https://www.npmjs.com/package/swagger-ui-express)
 
-## **Days 21–23: Security**
+## **Days 24–26: Security**
 
 **Day 21: Helmet**
 
@@ -254,9 +367,28 @@ Here’s your **30-day Express.js crash course**, structured API-first with JWT 
 - **Task:** Explore using native `https` module and self-signed cert for local dev.
 - **Resources:** [NodeJS HTTPS server](https://nodejs.org/api/https.html)
 
-## **Days 24–26: Robustness**
+**Day 27: Secure Cookies**
 
-**Day 24: Logging and Monitoring**
+- **Task:** Understand how to set and manage secure, HTTP-only cookies in Express. This is crucial for session management or storing non-sensitive tokens securely.
+- **Snippet:**
+    ```js
+    // Setting a secure, HTTP-only cookie
+    res.cookie('token', 'your_jwt_token', {
+      httpOnly: true, // Prevents client-side JavaScript from accessing the cookie
+      secure: process.env.NODE_ENV === 'production', // Send cookie only over HTTPS in production
+      maxAge: 3600000, // Cookie expiration in milliseconds (1 hour)
+      sameSite: 'Lax' // Protection against CSRF attacks
+    });
+
+    // Clearing a cookie
+    res.clearCookie('token');
+    ```
+- **Resources:** [Express `res.cookie()` documentation](https://expressjs.com/en/api.html#res.cookie), [MDN Web Docs: `Set-Cookie` header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie)
+- **Reading:** What are the `httpOnly`, `secure`, `SameSite`, and `Max-Age`/`Expires` cookie attributes? Why are they important for security?
+
+## **Days 28–30: Robustness**
+
+**Day 28: Logging and Monitoring**
 
 - **Task:** Integrate `morgan` logs with a rotating file stream.
 - **Snippet:** [Morgan docs](https://www.npmjs.com/package/morgan)
@@ -271,9 +403,9 @@ Here’s your **30-day Express.js crash course**, structured API-first with JWT 
 - **Task:** Deploy API to Render or Heroku; configure environment variables.
 - **Reading:** [Heroku + Express quickstart](https://devcenter.heroku.com/articles/getting-started-with-nodejs)
 
-## **Days 27–29: Testing & External APIs**
+## **Days 31–33: Testing & External APIs**
 
-**Day 27: Automated API Testing**
+**Day 31: Automated API Testing**
 
 - **Task:** Use Jest and Supertest to write integration tests for `/hello`.
 - **Snippet:**
@@ -283,7 +415,7 @@ Here’s your **30-day Express.js crash course**, structured API-first with JWT 
     ```
 - **Resources:** [Jest + Supertest](https://jestjs.io/docs/getting-started)
 
-**Day 28: Consuming External APIs**
+**Day 32: Consuming External APIs**
 
 - **Task:** Use `axios` to create an `/weather` route that fetches data from an external API.
 - **Snippet:**
@@ -296,7 +428,7 @@ Here’s your **30-day Express.js crash course**, structured API-first with JWT 
     ```
 - **Resources:** [axios docs](https://github.com/axios/axios)
 
-**Day 29: API Documentation with Swagger**
+**Day 33: API Documentation with Swagger**
 
 - **Task:** Expand your OpenAPI docs with models and endpoint descriptions.
 - **Resources:** [OpenAPI Specification](https://swagger.io/specification/)
