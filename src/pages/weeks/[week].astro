@@ -1,0 +1,67 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { readFile } from 'node:fs/promises';
+import { marked } from 'marked';
+
+export async function getStaticPaths() {
+  return [
+    { params: { week: '1' } },
+    { params: { week: '2' } },
+    { params: { week: '3' } },
+    { params: { week: '4' } },
+    { params: { week: '5' } },
+  ];
+}
+
+const markdown = await readFile('docs/course_expanded.md', 'utf-8');
+
+const sections = markdown.split('## ').slice(1);
+
+const weeks = [];
+for (let i = 0; i < 5; i++) {
+  weeks.push([]);
+}
+
+let dayCounter = 1;
+for (const section of sections) {
+  const days = section.split('**Day');
+  for (const day of days) {
+    if (day.trim() === '') continue;
+    const weekIndex = Math.floor((dayCounter - 1) / 7);
+    if (weeks[weekIndex]) {
+      weeks[weekIndex].push(day);
+    }
+    dayCounter++;
+  }
+}
+
+const week = weeks[Astro.params.week - 1];
+---
+
+<Layout>
+  <div class="px-40 flex flex-1 justify-center py-5">
+    <div class="layout-content-container flex flex-col max-w-[960px] flex-1">
+      <h1 class="text-white text-4xl font-black leading-tight tracking-[-0.033em]">Week {Astro.params.week}</h1>
+      <div class="divide-y divide-gray-700">
+        {week.map((day, index) => (
+          <div class="py-4">
+            <button class="w-full text-left text-white text-lg font-bold leading-tight tracking-[-0.015em]">
+              Day {index + 1 + (Astro.params.week - 1) * 7}
+            </button>
+            <div class="text-white text-base font-normal leading-normal pt-2" style="display: none;" set:html={marked.parse(day)}>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+  <script>
+    const buttons = document.querySelectorAll('button');
+    buttons.forEach(button => {
+      button.addEventListener('click', () => {
+        const content = button.nextElementSibling;
+        content.style.display = content.style.display === 'none' ? 'block' : 'none';
+      });
+    });
+  </script>
+</Layout>
