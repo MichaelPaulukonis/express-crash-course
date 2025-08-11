@@ -24,12 +24,12 @@ for (let i = 0; i < 5; i++) {
 
 let dayCounter = 1;
 for (const section of sections) {
-  const days = section.split('**Day');
+  const days = section.split(/^\*\*Day\s/gm);
   for (const day of days) {
     if (day.trim() === '') continue;
     const weekIndex = Math.floor((dayCounter - 1) / 7);
     if (weeks[weekIndex]) {
-      weeks[weekIndex].push(day);
+      weeks[weekIndex].push(`**Day ${day}`);
     }
     dayCounter++;
   }
@@ -46,7 +46,7 @@ const week = weeks[Astro.params.week - 1];
         {week.map((day, index) => (
           <div class="py-4">
             <button class="w-full text-left text-white text-lg font-bold leading-tight tracking-[-0.015em]">
-              Day {index + 1 + (Astro.params.week - 1) * 7}
+              Day {index + 1 + (Number(Astro.params.week) - 1) * 7}
             </button>
             <div class="text-white text-base font-normal leading-normal pt-2" style="display: none;" set:html={marked.parse(day)}>
             </div>
@@ -60,7 +60,7 @@ const week = weeks[Astro.params.week - 1];
     buttons.forEach(button => {
       button.addEventListener('click', () => {
         const content = button.nextElementSibling;
-        content.style.display = content.style.display === 'none' ? 'block' : 'none';
+        content!.style.display = content!.style.display === 'none' ? 'block' : 'none';
       });
     });
   </script>
