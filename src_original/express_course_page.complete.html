@@ -128,6 +128,14 @@
               <div id="progressFill" class="progress-fill" style="width: 0%"></div>
             </div>
             <p id="progressText" class="text-[#9caaba] text-sm">0 of 33 days completed (0%)</p>
+
+            <div class="mt-6 p-4 bg-[#111418] rounded-lg border border-[#283039]">
+              <p class="text-[#0d78f2] text-sm font-medium mb-2">💡 Daily Learning Tip</p>
+              <p class="text-[#9caaba] text-xs">
+                Each day, spend 5–7 minutes on the project task/code and 2–5 minutes reading the resource links for
+                conceptual understanding. This approach builds both practical skills and theoretical knowledge.
+              </p>
+            </div>
           </div>
 
           <!-- Days 1–3: Foundations & Project Setup -->
@@ -1393,13 +1401,6 @@ app.get('/weather', async (req, res) => {
                 <li>• Implement caching strategies</li>
               </ul>
             </div>
-            <div class="mt-6 p-4 bg-[#111418] rounded-lg border border-[#283039]">
-              <p class="text-[#0d78f2] text-sm font-medium mb-2">💡 Daily Learning Tip</p>
-              <p class="text-[#9caaba] text-xs">
-                Each day, spend 5–7 minutes on the project task/code and 2–5 minutes reading the resource links for
-                conceptual understanding. This approach builds both practical skills and theoretical knowledge.
-              </p>
-            </div>
           </div>
         </div>
       </div>
@@ -1414,9 +1415,17 @@ app.get('/weather', async (req, res) => {
     function loadProgress() {
       const savedProgress = getCookie('expressCoursProgress');
       if (savedProgress) {
-        completedDays = new Set(JSON.parse(savedProgress));
-        updateProgressDisplay();
-        updateCompletionButtons();
+        try {
+          const parsedData = JSON.parse(savedProgress);
+          // Ensure the data is an array before creating a Set
+          if (Array.isArray(parsedData)) {
+            completedDays = new Set(parsedData);
+            updateProgressDisplay();
+            updateCompletionButtons();
+          }
+        } catch (e) {
+          console.error("Error parsing progress cookie:", e);
+        }
       }
     }
 
@@ -1430,7 +1439,8 @@ app.get('/weather', async (req, res) => {
     function setCookie(name, value, days) {
       const expires = new Date();
       expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
-      document.cookie = name + '=' + value + ';expires=' + expires.toUTCString() + ';path=/';
+      // Added SameSite=Lax for security and Secure to ensure it's only sent over HTTPS.
+      document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Lax;Secure`;
     }
 
     function getCookie(name) {
@@ -1499,21 +1509,24 @@ app.get('/weather', async (req, res) => {
 
     // Reset progress
     function resetProgress() {
-      if (confirm('Are you sure you want to reset your progress? This cannot be undone.')) {
-        completedDays.clear();
-        document.cookie = 'expressCoursProgress=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-
-        // Reset all buttons
-        for (let i = 1; i <= 33; i++) {
-          const button = document.getElementById(`complete${i}`);
-          if (button) {
-            button.classList.remove('completed');
-            button.querySelector('span').textContent = 'Mark Complete';
-          }
-        }
-
-        updateProgressDisplay();
+      // Using a confirmation dialog to prevent accidental resets.
+      const confirmReset = confirm('Are you sure you want to reset your progress? This cannot be undone.');
+      if (!confirmReset) {
+        return;
       }
+
+      completedDays.clear();
+      // Clear the cookie by setting an expiry date in the past.
+      document.cookie = 'expressCoursProgress=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+
+      // Reset all completion buttons to their default state.
+      document.querySelectorAll('.lesson-item button.completed').forEach(button => {
+        if (button.id.startsWith('complete')) {
+          button.classList.remove('completed');
+          button.querySelector('span').textContent = 'Mark Complete';
+        }
+      });
+      updateProgressDisplay();
     }
 
     // Initialize on page load
