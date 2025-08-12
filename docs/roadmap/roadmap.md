@@ -15,6 +15,16 @@ This document outlines potential features, refactorings, and improvements for th
 
 ## notes on Cookies
 
+- <https://web.dev/articles/cookie-notice-best-practices>
+- https://elfsight.com/cookie-consent-widget/templates/
+- [free cookies notice maker](https://cookiesnotice.com/)
+  - will download script, css, etc. from their site
+  - I don't think I like that
+- https://www.websitepolicies.com/blog/cookie-banner-examples
+- https://www.cookieyes.com/blog/gdpr-cookie-consent-banner-examples/
+- https://www.enzuzo.com/learn/best-cookie-banner-examples
+
+
 Do You Need to Notify Users About Cookies?
 Yes, almost certainly.
 

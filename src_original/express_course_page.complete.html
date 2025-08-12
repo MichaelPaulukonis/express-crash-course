@@ -6,7 +6,7 @@
   <link rel="stylesheet" as="style" onload="this.rel='stylesheet'"
     href="https://fonts.googleapis.com/css2?display=swap&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900&amp;family=Space+Grotesk%3Awght%40400%3B500%3B700" />
 
-  <title>30-Day Express.js Crash Course - CodeCraft Academy</title>
+  <title>30-Day Express.js Crash Course - Xray Code Bites</title>
   <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
 
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -88,7 +88,7 @@
               </defs>
             </svg>
           </div>
-          <h2 class="text-white text-lg font-bold leading-tight tracking-[-0.015em]">CodeCraft Academy</h2>
+          <h2 class="text-white text-lg font-bold leading-tight tracking-[-0.015em]">Xray Code Bites</h2>
         </div>
         <div class="flex flex-1 justify-end gap-8">
           <div class="flex items-center gap-9">
@@ -163,11 +163,14 @@
               </div>
               <div id="day1" class="lesson-content bg-[#1e2329] rounded-lg p-4 mt-2">
                 <p class="text-[#9caaba] text-sm mb-4">Initialize the API project with Express, set up an entrypoint
-                  (app.js), and add a health check endpoint at /health.</p>
+                  (app.js), and add a health check endpoint at /health. Run the server and visit the app at http://localhost:3000/health. 
+                  All other paths will return a 404.</p>
                 <pre><code>const express = require('express');
 const app = express();
+const port = 3000;
+
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
-app.listen(3000, () => console.log('Server running'));</code></pre>
+app.listen(port, () => console.log(`Server running on port ${port}`));</code></pre>
                 <div class="mt-4">
                   <p class="text-white text-sm font-medium mb-2">Resources:</p>
                   <ul class="text-[#9caaba] text-sm">

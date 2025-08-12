@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docker Beginner Projects</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .intro {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(240, 147, 251, 0.3);
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .project-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border-left: 5px solid #667eea;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .project-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .project-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .project-icon {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .project-description {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+
+        .teaches-section, .real-use-section {
+            margin-bottom: 15px;
+        }
+
+        .section-label {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-content {
+            color: #555;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .command-example {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9rem;
+            margin: 15px 0;
+            color: #2c3e50;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .command-example::before {
+            content: '$ ';
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .tips-section {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 40px;
+        }
+
+        .tips-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .tip-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .tip-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            header {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+
+        .difficulty-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #00b894, #00a085);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🐳 Docker Beginner Projects</h1>
+            <p class="subtitle">Hands-on projects to master Docker fundamentals</p>
+        </header>
+
+        <div class="content">
+            <div class="intro">
+                <h2>Start Your Docker Learning Path</h2>
+                <p>These three projects will teach you the core Docker concepts you need as a senior engineer. Each builds on the previous one, taking you from basic containers to real-world applications.</p>
+            </div>
+
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="difficulty-badge">Week 1-2 • Beginner</div>
+                    <h3 class="project-title">
+                        <div class="project-icon">🌐</div>
+                        Static Website with Nginx
+                    </h3>
+                    <p class="project-description">
+                        Build and serve a simple HTML/CSS website using an nginx container. This project teaches you the fundamentals of Docker images, containers, and port mapping.
+                    </p>
+                    
+                    <div class="teaches-section">
+                        <div class="section-label">🎯 What You'll Learn:</div>
+                        <div class="section-content">
+                            Basic Dockerfile creation, port mapping (-p flag), static content serving, and container lifecycle management
+                        </div>
+                    </div>
+
+                    <div class="real-use-section">
+                        <div class="section-label">💼 Real-World Use:</div>
+                        <div class="section-content">
+                            Marketing websites, documentation sites, landing pages, and any static content delivery
+                        </div>
+                    </div>
+
+                    <div class="command-example">docker run -p 8080:80 -v $(pwd):/usr/share/nginx/html nginx:alpine</div>
+                </div>
+
+                <div class="project-card">
+                    <div class="difficulty-badge">Week 1-2 • Beginner</div>
+                    <h3 class="project-title">
+                        <div class="project-icon">⚡</div>
+                        Simple API Server
+                    </h3>
+                    <p class="project-description">
+                        Create a basic REST API using Express.js or Flask with a few endpoints. This introduces you to application containerization and environment configuration.
+                    </p>
+                    
+                    <div class="teaches-section">
+                        <div class="section-label">🎯 What You'll Learn:</div>
+                        <div class="section-content">
+                            Application containerization, environment variables, Dockerfile best practices, and container debugging
+                        </div>
+                    </div>
+
+                    <div class="real-use-section">
+                        <div class="section-label">💼 Real-World Use:</div>
+                        <div class="section-content">
+                            Microservices, API backends, webhook handlers, and serverless function alternatives
+                        </div>
+                    </div>
+
+                    <div class="command-example">docker build -t my-api . && docker run -p 3000:3000 -e NODE_ENV=development my-api</div>
+                </div>
+
+                <div class="project-card">
+                    <div class="difficulty-badge">Week 1-2 • Beginner</div>
+                    <h3 class="project-title">
+                        <div class="project-icon">🗄️</div>
+                        Database Container
+                    </h3>
+                    <p class="project-description">
+                        Set up PostgreSQL or MySQL in a container with custom configuration and persistent data. Learn about volumes and data management.
+                    </p>
+                    
+                    <div class="teaches-section">
+                        <div class="section-label">🎯 What You'll Learn:</div>
+                        <div class="section-content">
+                            Data persistence with volumes, initialization scripts, database configuration, and container networking
+                        </div>
+                    </div>
+
+                    <div class="real-use-section">
+                        <div class="section-label">💼 Real-World Use:</div>
+                        <div class="section-content">
+                            Development databases, testing environments, isolated data stores, and database version management
+                        </div>
+                    </div>
+
+                    <div class="command-example">docker run -d -p 5432:5432 -v pgdata:/var/lib/postgresql/data -e POSTGRES_PASSWORD=secret postgres:13</div>
+                </div>
+            </div>
+
+            <div class="tips-section">
+                <h3 class="tips-title">🚀 Success Tips for Each Project</h3>
+                <div class="tips-grid">
+                    <div class="tip-item">
+                        <div class="tip-title">Start Simple</div>
+                        <p>Begin with the most basic version that works, then add complexity. A "Hello World" API is better than a complex one that doesn't run.</p>
+                    </div>
+                    <div class="tip-item">
+                        <div class="tip-title">Use Real Code</div>
+                        <p>Don't build toy examples. Take actual projects you're working on and containerize them. This gives you immediate practical value.</p>
+                    </div>
+                    <div class="tip-item">
+                        <div class="tip-title">Debug Everything</div>
+                        <p>When containers don't work, use docker logs, docker exec, and docker inspect. Learning to debug is as important as building.</p>
+                    </div>
+                    <div class="tip-item">
+                        <div class="tip-title">Optimize Later</div>
+                        <p>Get it working first, then make it better. Don't worry about image size or advanced features until you understand the basics.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
