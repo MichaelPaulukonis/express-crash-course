@@ -1,114 +1,136 @@
-# Design System: CodeCraft/DevCourse
 
-This document outlines the design system derived from the sample pages for the Express.js crash course. The goal is to create a consistent and reusable set of design patterns and components to be applied to the full course content.
+# Design System
 
-## Philosophy
+This design system is based on the visual design of the Express.js Crash Course web pages. It provides a guide to the typographic, color, spacing, and component styles used throughout the application.
 
-The design is modern, clean, and developer-focused. It uses a dark theme to reduce eye strain and a clear typographic hierarchy to ensure readability. The overall aesthetic is professional and engaging.
+## 1. Typography
 
-## I. Color Palette
+### Font Families
+- **Primary:** "Space Grotesk", sans-serif
+- **Secondary:** "Noto Sans", sans-serif
 
-The color scheme is based on a dark background with a vibrant blue accent color.
+### Font Sizes and Weights
 
-*   **Primary Background**: `#111418` (A very dark, almost black, blue-gray)
-*   **Secondary Background**: `#1b2127` (A slightly lighter dark blue-gray, used for cards and highlighted sections)
-*   **Primary Text**: `#ffffff` (White)
-*   **Secondary Text**: `#9caaba` (A light, slightly desaturated blue-gray for less important text and footer links)
-*   **Accent**: `#0d78f2` (A bright, vibrant blue for buttons and calls to action)
-*   **Borders**: `#283039` and `#3b4754` (Dark blue-grays for subtle separation of UI elements)
+| Element | Font Size | Font Weight | Letter Spacing | Line Height |
+|---|---|---|---|---|
+| `h1` | 2.25rem (36px), 3rem (48px) | 900 (Black) | -0.033em | tight |
+| `h2` | 1.25rem (20px), 1.5rem (24px) | 700 (Bold) | -0.015em | tight |
+| `h3` | 1.125rem (18px), 1.25rem (20px) | 700 (Bold) | -0.015em | tight |
+| Body | 0.875rem (14px), 1rem (16px) | 400 (Normal) | normal | normal |
+| Button | 0.875rem (14px), 1rem (16px) | 700 (Bold) | 0.015em | normal |
+| Link | 0.875rem (14px) | 500 (Medium) | normal | normal |
 
-## II. Typography
+## 2. Spacing and Layout
 
-The typography is clean and modern, using a combination of sans-serif fonts to create a clear hierarchy.
+The layout is built on a flexible grid system using Tailwind CSS utility classes. Spacing is based on a 4px grid unit.
 
-*   **Primary Font**: "Space Grotesk" (Used for headings and prominent text)
-*   **Secondary Font**: "Noto Sans" (Used for body text and paragraphs)
-*   **Font Weights**: 400 (normal), 500 (medium), 700 (bold), 900 (black)
+### Grid System
+- The main content area is centered with a `max-width` of `960px`.
+- A container-based query system (`@container`) is used for responsive adjustments at different breakpoints.
 
-### Headings
+### Margin and Padding
+- **Common Padding:** `px-4`, `py-3`, `p-4`
+- **Section Spacing:** `mb-6`, `py-5`, `py-6`
+- **Gaps:** `gap-3`, `gap-4`, `gap-6`, `gap-8`
 
-*   **h1**: `text-4xl` (36px) or `text-5xl` (48px), `font-black`, `tracking-[-0.033em]`
-*   **h2**: `text-lg` (18px) to `text-[22px]` (22px), `font-bold`, `tracking-[-0.015em]`
-*   **h3**: `text-lg` (18px), `font-bold`, `tracking-[-0.015em]`
+### Alignment
+- Flexbox is used extensively for alignment, with `items-center` and `justify-between` being common patterns.
 
-### Body Text
-
-*   **p**: `text-base` (16px) or `text-sm` (14px), `font-normal`
-
-## III. Components
+## 3. Components
 
 ### Buttons
 
-*   **Primary Button**:
-    *   **Background**: `bg-[#0d78f2]` (Accent blue)
-    *   **Text**: `text-white`, `text-sm` or `text-base`, `font-bold`
-    *   **Padding**: `h-10 px-4` or `h-12 px-5`
-    *   **Border**: `rounded-lg`
-*   **Secondary Button**:
-    *   **Background**: `bg-[#283039]` (Dark blue-gray)
-    *   **Text**: `text-white`, `text-sm`, `font-bold`
-    *   **Padding**: `h-10 px-4`
-    *   **Border**: `rounded-lg`
+- **Primary Button:**
+  - **Background:** `#0d78f2`
+  - **Text Color:** `#ffffff`
+  - **Hover:** Darkens slightly
+  - **Padding:** `h-10 px-4` or `h-12 px-5`
+  - **Border Radius:** `rounded-lg`
+
+- **Secondary Button:**
+  - **Background:** `#283039`
+  - **Text Color:** `#ffffff`
+  - **Hover:** Darkens slightly
+  - **Padding:** `h-10 px-4`
+  - **Border Radius:** `rounded-lg`
+
+- **Completed Button:**
+    - **Background:** `#22c55e`
+    - **Text Color:** `#ffffff`
+    - **Hover:** `#16a34a`
+
+### Navigation
+- A horizontal navigation bar is present in the header.
+- Links are styled as `text-white text-sm font-medium`.
 
 ### Cards
+- **Lesson Item:**
+  - A container with a title, description, and action buttons.
+  - **Background:** `#1e2329` (for expanded content)
+  - **Border Radius:** `rounded-lg`
 
-*   **Background**: `bg-[#1b2127]`
-*   **Border**: `border border-[#3b4754]`
-*   **Padding**: `p-4`
-*   **Corner Radius**: `rounded-lg`
+- **Highlight Card:**
+  - Used for course highlights.
+  - **Background:** `#1b2127`
+  - **Border:** `border border-[#3b4754]`
+  - **Padding:** `p-4`
+  - **Border Radius:** `rounded-lg`
 
-### Header
+### Containers
+- **Main Layout Container:** `layout-container`
+- **Content Container:** `layout-content-container`
+- **Capstone Review Container:**
+    - **Background:** `#1e2329`
+    - **Padding:** `px-4 py-6`
+    - **Border Radius:** `rounded-lg`
 
-*   **Background**: Transparent
-*   **Border**: `border-b border-solid border-b-[#283039]`
-*   **Padding**: `px-10 py-3`
-*   **Layout**: `flex`, `items-center`, `justify-between`
+## 4. Color System
 
-### Footer
+### Primary Colors
+- **Blue:** `#0d78f2` (Primary actions, links, headers)
 
-*   **Text Color**: `text-[#9caaba]`
-*   **Layout**: `flex`, `flex-col`, `gap-6`, `text-center`
+### Secondary Colors
+- **Green:** `#22c55e` (Completed status)
 
-## IV. Layout
+### Background Colors
+- **Primary:** `#111418` (Main background)
+- **Secondary:** `#1e2329` (Content sections, cards)
+- **Tertiary:** `#1b2127` (Highlight cards)
 
-*   **Framework**: Tailwind CSS
-*   **Structure**: The main layout is a full-height flex column. The content is centered with a `max-w-[960px]`.
-*   **Spacing**: Consistent spacing is used throughout, with gaps of `3` to `8` units (e.g., `gap-3`, `gap-8`). Padding and margins are also applied consistently.
-*   **Responsiveness**: The design uses container queries (`@container`) and responsive prefixes (`@[480px]:`) to adapt to different screen sizes.
+### Text Colors
+- **Primary:** `#ffffff` (Headings, primary text)
+- **Secondary:** `#9caaba` (Subheadings, descriptions)
+- **Code:** `#e6db74`
 
-## V. Iconography
+### Border Colors
+- **Primary:** `#283039`
+- **Secondary:** `#3b4754`
 
-The icons are SVGs embedded directly in the HTML. They are single-color and filled with `currentColor`, which means they inherit the color of the parent text element. This is a flexible and efficient way to handle icons.
+### Gradients
+- **Header Text:** `linear-gradient(90deg, #0d78f2 0%, #1e88e5 100%)`
+- **Progress Bar:** `linear-gradient(90deg, #0d78f2 0%, #22c55e 100%)`
+- **Hero Image:** `linear-gradient(rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.4) 100%)`
 
-## VI. Branding
+## 5. Visual Hierarchy
 
-The branding is inconsistent across the sample pages, with three different logos and brand names ("CodeCraft", "CodeCraft Academy", "DevCourse"). A single, consistent brand identity should be chosen and applied across all pages.
+- **Headings:** `h1`, `h2`, and `h3` are used to structure content with decreasing font size and weight.
+- **Emphasis:** `<strong>` tags are used to highlight key terms with `text-white`.
+- **Content Organization:** Content is organized into logical sections with clear headings and spacing.
 
-## VII. Content Elements
+## 6. Animation and Interaction
 
-### Code Snippets
+- **Hover States:** Buttons and links have hover effects that typically involve a change in background color.
+- **Transitions:** `transition-colors` is used for smooth color changes on hover.
+- **Lesson Content:** Lesson details are revealed/hidden with a click, managed by JavaScript.
 
-*   **Background**: `bg-[#0d1117]` (A very dark gray, slightly different from the primary background to create separation)
-*   **Text**: A monospace font like "Fira Code" or "JetBrains Mono"
-*   **Syntax Highlighting**: A color scheme that is consistent with the dark theme. We can use a library like Prism or highlight.js for this.
-*   **Padding**: `p-4`
-*   **Border**: `rounded-lg`
+## 7. Icons and Imagery
 
-### Lists
+### Icons
+- **Style:** Line icons are used throughout the application.
+- **Library:** SVG icons are embedded directly in the HTML.
+- **Color:** `currentColor` is used for icon fills, allowing them to inherit text color.
+- **Size:** `20px`, `24px`
 
-*   **Unordered Lists** (`ul`):
-    *   `list-disc`
-    *   `pl-5` (for indentation)
-*   **Ordered Lists** (`ol`):
-    *   `list-decimal`
-    *   `pl-5` (for indentation)
-*   **List Items** (`li`):
-    *   `mb-2` (for spacing between items)
-
-### Inline Code
-
-*   **Background**: `bg-[#283039]` (The same as the secondary button background)
-*   **Text**: `text-[#9caaba]` (The secondary text color)
-*   **Font**: A monospace font
-*   **Padding**: `px-1.5 py-0.5`
-*   **Border**: `rounded-md`
+### Imagery
+- **Hero Image:** A background image is used in the hero section of the main page.
+- **User Profile:** A circular avatar is used for the user profile image.
