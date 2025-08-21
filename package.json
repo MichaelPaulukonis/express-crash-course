@@ -6,12 +6,16 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "live": "live-server --open=express/index.html"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.11",
     "astro": "^5.12.9",
     "marked": "^16.1.2",
     "tailwindcss": "^4.1.11"
+  },
+  "devDependencies": {
+    "live-server": "^1.2.2"
   }
 }
